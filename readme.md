@@ -10,7 +10,7 @@ A simple logging library to be used in C++ projects
 
 ## Initialization
 
-No need to initialize anything just use the library as you wish. This is achieved using the singleton pattern, that means that once the the library is used for the first time it will initialize itself.
+No need to initialize anything just use the library. This is achieved using the singleton pattern, that means that once the the library is used for the first time it will initialize itself.
 
 ## Usage
 
