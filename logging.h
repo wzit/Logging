@@ -21,7 +21,7 @@
 namespace ExMachina {
 namespace Logging {
 
-enum class LoggingLevel { Verbose = 1, Info = 2, Debug = 4, Warning = 8, Error = 16, Fatal = 32 };
+enum class LoggingLevel { Verbose = 0, Info = 1, Debug = 2, Warning = 3, Error = 4, Fatal = 5 };
 
 template <typename LoggingPolicy>
 class Logging;
@@ -95,6 +95,9 @@ protected:
 
     /// Time reference so we can log the instructions time
     std::chrono::high_resolution_clock::time_point _referenceTime;
+
+    /// Holds the severity level as strings
+    std::vector<std::string> _logSeverity;
 private:
     Logging();
     LoggingPolicy _policy;
@@ -117,7 +120,7 @@ Logging<LoggingPolicy> &Logging<LoggingPolicy>::instance()
 }
 
 template <typename LoggingPolicy>
-Logging<LoggingPolicy>::Logging() : _logLineNumber(0)
+Logging<LoggingPolicy>::Logging() : _logLineNumber(0),_logSeverity{"<VERBOSE>","<INFO>","<DEBUG>","<WARNING>","<ERROR>","<FATAL>"}
 {
     /// TODO: Make the log name/policy more customizable
     _policy.openOstream("runningLog_Exmachina.log");
@@ -172,30 +175,7 @@ void Logging<LoggingPolicy>::print(Args &&...args)
     currentTimeString[strlen(currentTimeString) -1] =0;
     logStream << _logLineNumber++ << " < " << currentTimeString << " - ";
     logStream << std::chrono::duration_cast<std::chrono::milliseconds>(currTime - _referenceTime).count() << " ms >";
-
-    switch(severity)
-    {
-        case LoggingLevel::Verbose:
-            logStream << " - <VERBOSE> ";
-            break;
-        case LoggingLevel::Info:
-            logStream << " - <INFO> ";
-            break;
-        case LoggingLevel::Debug:
-            logStream << " - <DEBUG> ";
-            break;
-        case LoggingLevel::Warning:
-            logStream << " - <WARNING> ";
-            break;
-        case LoggingLevel::Error:
-            logStream << " - <ERROR> ";
-            break;
-        case LoggingLevel::Fatal:
-            logStream << " - <FATAL> ";
-            break;
-    }
-
-    logStream << _threadName[std::this_thread::get_id()] << " ";
+    logStream << _logSeverity[severity] << _threadName[std::this_thread::get_id()] << " ";
     printImpl(std::forward<std::stringstream>(logStream),std::move(args)...);
 }
 
