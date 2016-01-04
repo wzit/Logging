@@ -6,6 +6,9 @@
 #include "logging.h"
 using namespace ExMachina::Logging;
 
+/// General macros
+#define CAPTURE_VARIABLE_NAME(x) #x
+
 /// These macros are defined to ease the use of the library
 /// Each one of them represents a level of severity
 #ifndef LOGGING_MACROS
